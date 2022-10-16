@@ -1,4 +1,4 @@
-const Tour = require('./../models/tourModel');
+const Tour = require('../models/tourModel');
 
 // const tours = JSON.parse(
 //   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
@@ -17,6 +17,7 @@ exports.checkID = (req, res, next, val) => {
 };
 */
 
+/*
 /// Create a checkBody middleware function
 /// Check if the body contains "name" and "price" property
 /// If not, send back 400 (bad request), Also add it to post handler stack
@@ -29,6 +30,7 @@ exports.checkBody = (req, res, next) => {
   }
   next();
 };
+*/
 
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
@@ -55,31 +57,44 @@ exports.getTour = (req, res) => {
   // });
 };
 
-exports.createTour = (req, res) => {
-  res.status(201).json({
-    status: 'success',
-    // data: {
-    //   tour: newTour,
-    // },
-  });
+exports.createTour = async (req, res) => {
+  try {
+    // const newTour = new Tour({});
+    // newTour.save();
 
-  /*
-  const newId = tours[tours.length - 1].id + 1;
-  const newTour = { id: newId, ...req.body };
-  tours.push(newTour);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    () => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-  */
+    const newTour = await Tour.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: newTour,
+      },
+    });
+
+    /*
+    const newId = tours[tours.length - 1].id + 1;
+    const newTour = { id: newId, ...req.body };
+    tours.push(newTour);
+    fs.writeFile(
+      `${__dirname}/dev-data/data/tours-simple.json`,
+      JSON.stringify(tours),
+      () => {
+        res.status(201).json({
+          status: 'success',
+          data: {
+            tour: newTour,
+          },
+        });
+      }
+    );
+    */
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid Data Sent!!!',
+      // message: err,
+    });
+  }
 };
 
 exports.updateTour = (_req, res) => {
