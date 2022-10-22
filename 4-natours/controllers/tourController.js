@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const Tour = require('../models/tourModel');
 
 // const tours = JSON.parse(
@@ -32,13 +33,54 @@ exports.checkBody = (req, res, next) => {
 };
 */
 
-exports.getAllTours = async (_req, res) => {
+exports.getAllTours = async (req, res) => {
   try {
+    console.log(req.query);
+
+    /// 1. BUILD QUERY
+
+    // I. Filtering
+    // 127.0.0.1:3000/api/v1/tours?duration[gte]=5&difficulty=easy
+    const queryObj = {...req.query};
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach(el => delete queryObj[el]);
+
+    /*
     const tours = await Tour.find();
-    // console.log(req.requestTime);
+
+    const tours = await Tour.find({
+      duration: 5,
+      difficulty: 'easy',
+    });
+
+    const tours = await Tour.find()
+      .where('duration').equals(5)
+      .where('difficulty').equals('easy');
+    */
+
+    // II. Advanced Filtering
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, match => `$${match}`);
+    // console.log(JSON.parse(queryStr));
+
+    let query = Tour.find(JSON.parse(queryStr));
+
+    /// III. Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      // console.log(sortBy);
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    /// 2. EXECUTE QUERY
+    const tours = await query;
+
+    /// 3. SEND RESPONSE
     res.status(200).json({
       status: 'success',
-      // requestedAt: req.requestTime,
+      requestedAt: req.requestTime,
       results: tours.length,
       data: {
         tours,
