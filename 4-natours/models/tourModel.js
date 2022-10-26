@@ -116,6 +116,17 @@ tourSchema.post(/^find/, function (docs, next) {
   next();
 });
 
+// 3. AGGREGATION MIDDLEWARE:
+// I. pre: runs before .aggregate() after the command is issued
+// II. post: runs after .aggregate() after the command is issued
+tourSchema.pre('aggregate', function (next) {
+  // console.log(this.pipeline());
+  this.pipeline().unshift({
+    $match: { secretTour: { $ne: true } },
+  });
+  next();
+});
+
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
