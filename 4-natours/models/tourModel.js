@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -54,6 +55,7 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    slug: String,
   },
   {
     toJSON: { virtuals: true },
@@ -65,6 +67,27 @@ const tourSchema = new mongoose.Schema(
 // as they can be easily derived from existing attributes which are saved into db
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// Document Middleware: runs before .save() and .create() after these commands are issued
+// Here we are using it for 'save' hook/middleware
+tourSchema.pre('save', function (next) {
+  // .this refers to current document
+  // console.log(this);
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+tourSchema.pre('save', (next) => {
+  // .this refers to current document
+  // console.log('This document is going to be saved...');
+  next();
+});
+
+tourSchema.post('save', (doc, next) => {
+  // .this refers to current document
+  // console.log('This is post hook for save middleware');
+  next();
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
