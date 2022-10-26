@@ -56,6 +56,10 @@ const tourSchema = new mongoose.Schema(
     },
     startDates: [Date],
     slug: String,
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -69,8 +73,11 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// Document Middleware: runs before .save() and .create() after these commands are issued
+// 1. DOCUMENT MIDDLEWARE:
+// I. pre: runs before .save() and .create() after these commands are issued
+// II. post: runs after .save() and .create() after these commands are issued
 // Here we are using it for 'save' hook/middleware
+
 tourSchema.pre('save', function (next) {
   // .this refers to current document
   // console.log(this);
@@ -87,6 +94,25 @@ tourSchema.pre('save', (next) => {
 tourSchema.post('save', (doc, next) => {
   // .this refers to current document
   // console.log('This is post hook for save middleware');
+  next();
+});
+
+// 2. QUERY MIDDLEWARE:
+// I. pre: runs before .find() after the command is issued
+// II. post: runs after .find() after the command is issued
+
+// ^find: this RE means all the strings which start with find
+// tourSchema.pre('find', (next) => {
+tourSchema.pre(/^find/, function (next) {
+  // select all document where secretTour = false
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took: ${Date.now() - this.start} ms`);
+  console.log(docs);
   next();
 });
 
