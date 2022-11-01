@@ -40,4 +40,11 @@ mongoose
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`server listening on port ${port}...`);
+}); 
+
+// safety net - unhandled promise rejection
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.msg);
+  console.log('UNHANDLED REJCTION! 💥 Shutting down...');
+  process.exit(1);
 });
