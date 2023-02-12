@@ -8,14 +8,11 @@ class APIFeatures {
     const queryObj = { ...this.queryString };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
-
     // II. Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|lte|gt|lt)\b/g, (match) => `$${match}`);
     // console.log(JSON.parse(queryStr));
-
     this.query = this.query.find(JSON.parse(queryStr));
-
     return this;
   }
 
@@ -27,7 +24,6 @@ class APIFeatures {
     } else {
       this.query = this.query.sort('-createdAt');
     }
-
     return this;
   }
 
@@ -38,7 +34,6 @@ class APIFeatures {
     } else {
       this.query = this.query.select('-__v');
     }
-
     return this;
   }
 
@@ -46,14 +41,7 @@ class APIFeatures {
     const page = this.queryString.page * 1 || 1;
     const limit = this.queryString.limit * 1 || 100;
     const skip = (page - 1) * limit;
-
     this.query = this.query.skip(skip).limit(limit);
-
-    // if (this.queryString.page) {
-    //   const numTours = await Tour.countDocuments();
-    //   if (skip >= numTours) throw new Error('Sorry, this page does not exist');
-    // }
-
     return this;
   }
 }
