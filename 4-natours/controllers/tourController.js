@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const Tour = require('../models/tourModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
@@ -19,7 +18,6 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
   const tours = await features.query;
-
   /// 2. SEND RESPONSE
   res.status(200).json({
     status: 'success',
