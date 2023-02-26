@@ -1,7 +1,10 @@
 const express = require('express');
-
-const router = express.Router(); /// router acts as middleware for api/v1/users api requests
+/// router acts as middleware for api/v1/users api requests
+const router = express.Router();
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
+
+router.post('/signup', authController.signup);
 
 router
   .route('/')
