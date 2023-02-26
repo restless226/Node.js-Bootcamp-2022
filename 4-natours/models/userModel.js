@@ -51,10 +51,18 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
-  // Delete the passwordConfirm field 
+  // Delete the passwordConfirm field
   this.passwordConfirm = undefined;
   next();
 });
+
+// instance method - method which is available on all documents of a certain collection
+userSchema.methods.verifyPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User = mongoose.model('User', userSchema);
 

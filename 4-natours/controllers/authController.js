@@ -25,14 +25,21 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   // const email = req.body.email;
   // const password = req.body.password;
+
   const { email, password } = req.body;
   /// 1] Check if email and password exist
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400));
   }
+
   /// 2] Check if user exist and password is correct
   const user = await User.findOne({ email: email }).select('+password');
+  const isPasswordVerified = await User.verifyPassword(password, user.password);
+  if (!user || !isPasswordVerified) {
+    return next(new AppError('Invalid email or password!', 401));
+  }
   console.log('exports.login user = ', user);
+
   /// 3] If everything is ok, send json web token to the client
   const token = '';
   res.status(200).json({
