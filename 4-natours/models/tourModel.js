@@ -136,7 +136,7 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`tourSchema.post query took: ${Date.now() - this.start} ms`);
-  console.log("tourSchema.post docs = ", docs);
+  // console.log("tourSchema.post docs = ", docs);
   next();
 });
 
