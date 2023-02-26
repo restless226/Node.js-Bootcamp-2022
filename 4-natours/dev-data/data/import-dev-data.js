@@ -17,7 +17,7 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    console.log('DB connected successfully...');
+    console.log('DB connected successfully!!!');
   });
 
 // SCRIPT TO READ JSON FILE
@@ -26,11 +26,10 @@ const tours = JSON.parse(
 );
 
 // IMPORT DATA INTO DB
-// eslint-disable-next-line no-unused-vars
 const importData = async () => {
   try {
     await Tour.create(tours);
-    console.log('Data successfully loaded !!!');
+    console.log('Data successfully loaded!!!');
   } catch (err) {
     console.log(`importData error = ${err}`);
   }
@@ -38,7 +37,6 @@ const importData = async () => {
 };
 
 // DELETE ALL DATA FROM DB
-// eslint-disable-next-line no-unused-vars
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
@@ -49,7 +47,7 @@ const deleteData = async () => {
   process.exit();
 };
 
-// console.log(`process.argv = ${process.argv}`);
+// console.log(`process.argv in import-dev-data.js = ${process.argv}`);
 
 if (process.argv[2] === '--import') {
   importData();

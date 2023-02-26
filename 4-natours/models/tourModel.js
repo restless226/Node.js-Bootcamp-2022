@@ -135,8 +135,8 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took: ${Date.now() - this.start} ms`);
-  console.log(docs);
+  console.log(`tourSchema.post query took: ${Date.now() - this.start} ms`);
+  console.log("tourSchema.post docs = ", docs);
   next();
 });
 
@@ -144,7 +144,7 @@ tourSchema.post(/^find/, function (docs, next) {
 // I. pre: runs before .aggregate() after the command is issued
 // II. post: runs after .aggregate() after the command is issued
 tourSchema.pre('aggregate', function (next) {
-  // console.log(this.pipeline());
+  // console.log("tourSchema aggregate middleware pipeline = ", this.pipeline());
   this.pipeline().unshift({
     $match: { secretTour: { $ne: true } },
   });

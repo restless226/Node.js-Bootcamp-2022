@@ -1,9 +1,9 @@
 const express = require('express');
-
-const router = express.Router(); /// router acts as middleware for api/v1/tours api requests
 const tourController = require('../controllers/tourController');
+const authController = require('./../controllers/authController');
 
-// router.param('id', tourController.checkID); /// middleware
+/// router acts as middleware for api/v1/tours api requests
+const router = express.Router();
 
 router
   .route('/top-5-cheap')
@@ -15,7 +15,7 @@ router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
 router
   .route('/')
-  .get(tourController.getAllTours)
+  .get(authController.protect, tourController.getAllTours)
   .post(tourController.createTour);
 
 router

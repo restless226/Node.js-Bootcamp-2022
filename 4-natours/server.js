@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 // catching uncaught exceptions
 process.on('uncaughtException', (err) => {
-  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log('Uncaught Exception!!! 💥 Shutting Down!!!');
   console.log(err.name, err.msg);
   process.exit(1);
 });
@@ -23,7 +23,6 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => {
-    // console.log(connection.connections);
     console.log('DB connected successfully...');
   });
 
@@ -51,9 +50,10 @@ const server = app.listen(port, () => {
 
 // safety net - unhandled promise rejection
 process.on('unhandledRejection', (err) => {
-  console.log('err = ', err);
-  console.log(err.name, err.msg);
-  console.log('UNHANDLED REJCTION! 💥 Shutting down...');
+  console.log('Unhandled Rejection!!! 💥 Shutting Down Server!!!');
+  console.log('unhandledRejection err = ', err);
+  console.log('unhandledRejection err.name = ', err.name);
+  console.log('unhandledRejection err.msg = ', err.msg);
   server.close(() => {
     process.exit(1);
   });
