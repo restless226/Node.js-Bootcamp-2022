@@ -17,6 +17,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    passwordChangedAt: req.body.passwordChangedAt,
   });
   const token = signToken(newUser._id);
   res.status(201).json({
@@ -82,8 +83,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   console.log('decodedObject = ', decodedObject);
 
   /// 3] Check if current user exists or not.
-  const decodedUser = await User.findById(decodedObject.id);
-  if (!decodedUser) {
+  const currentUser = await User.findById(decodedObject.id);
+  console.log("currentUser = ", currentUser);
+  if (!currentUser) {
     return next(
       new AppError(
         'The user belonging to this token does no longer exist.',
@@ -93,6 +95,17 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   /// 4] Check if user changes password after the token was issued.
+  const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(decodedObject.iat);
+  if (isPasswordChanged) {
+    return next(
+      new AppError(
+        'Your password has been changed recently! Please log in again!',
+        401,
+      )
+    );
+  }
 
+  /// 5] Grant access to protected route
+  req.user = currentUser;
   next();
 });
