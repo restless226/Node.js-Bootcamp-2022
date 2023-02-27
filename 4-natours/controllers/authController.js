@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const util = require('util');
 
+/// generates a unique jwt token
 const signToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -52,6 +54,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log('inside exports.protect in authController.js');
   let token;
 
   /// 1] Acquire token and check whether it exists or not.
@@ -61,18 +64,33 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log('exports.protect token = ', token);
-  if (!token)
+  console.log('token = ', token);
+  if (!token) {
     return next(
       new AppError(
         'Hey, You are not logged in! Please log in to get access.',
-        401
+        401,
       )
     );
+  }
 
   /// 2] Verify the token.
+  const decodedObject = await util.promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET
+  );
+  console.log('decodedObject = ', decodedObject);
 
   /// 3] Check if current user exists or not.
+  const decodedUser = await User.findById(decodedObject.id);
+  if (!decodedUser) {
+    return next(
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401,
+      )
+    );
+  }
 
   /// 4] Check if user changes password after the token was issued.
 
