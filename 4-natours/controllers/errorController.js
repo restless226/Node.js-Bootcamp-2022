@@ -27,6 +27,7 @@ const sendErrorProd = (err, res) => {
     });
   }
 };
+
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}`;
   return new AppError(message, 400);
@@ -34,7 +35,7 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFieldsDB = (err) => {
   const value = Object.values(err.keyValue)[0];
-  console.log("handleDuplicateFieldsDB value = ", value);
+  console.log('handleDuplicateFieldsDB value = ', value);
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
 };
@@ -45,18 +46,27 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => {
+  return new AppError('Invalid token. Please log in again!', 401);
+};
+
+const handleJWTExpiredError = () => {
+  return new AppError('Your token has expired. Please log in again!', 401);
+};
+
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
-  } else if (process.env.NODE_ENV === 'product  ion') {
+  } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === 'Validation Error') {
+    if (error.name === 'ValidationError')
       error = handleValidationErrorDB(error);
-    }
+    if (error.name === 'JsonWebTokenError') error = handleJWTError();
+    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
     sendErrorProd(error, res);
   }
 };
