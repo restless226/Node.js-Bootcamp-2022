@@ -6,13 +6,6 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please provide your name!'],
-    // trim: true,
-    // maxLength: [40, 'username must have less than or equal to 40 characters'],
-    // unique: true,
-    // minLength: [
-    //   10,
-    //   'username must have greater than or equal to 10 characters',
-    // ],
   },
   email: {
     type: String,
@@ -20,7 +13,6 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email!'],
-    // trim: false,
   },
   photo: {
     type: String,
@@ -30,10 +22,8 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please provide a password!'],
     minLength: 8,
     select: false,
-    // trim: false,
   },
   passwordConfirm: {
-    // trim: false,
     type: String,
     required: [true, 'Please confirm your password!'],
     validate: {
@@ -44,7 +34,14 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!',
     },
   },
-  passwordChangedAt: Date,
+  passwordChangedAt: {
+    type: Date,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'tour-guide', 'lead-tour-guide', 'admin'],
+    default: 'user',
+  },
 });
 
 userSchema.pre('save', async function (next) {

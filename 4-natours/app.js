@@ -6,7 +6,7 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 /// 1] MIDDLEWARES
-console.log("process.env.NODE_ENV = ", process.env.NODE_ENV);
+console.log('process.env.NODE_ENV = ', process.env.NODE_ENV);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -18,7 +18,7 @@ app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log("app.use middleware req.headers = ", req.headers);
+  console.log('app.use middleware req.headers = ', req.headers);
   next();
 });
 
@@ -30,7 +30,7 @@ app.use('/api/v1/users', userRouter);
 
 /// 3] handling unhandled requests
 app.all('*', (req, res, next) => {
-  console.log('app.all req = ', req);
+  // console.log('app.all req = ', req);
   next(new AppError(`Can't find ${req.originalUrl} on this server!`));
 });
 
