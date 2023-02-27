@@ -68,7 +68,7 @@ userSchema.methods.verifyPassword = async function (
 
 // checks if user has changed the password after the token was issued.
 // false means - user did not change his password after the token was issued
-userSchema.methods.changePasswordAfterTokenAssignment = async function (
+userSchema.methods.changePasswordAfterTokenAssignment = function (
   JWTTimestamp
 ) {
   if (this.passwordChangedAt) {
@@ -83,8 +83,7 @@ userSchema.methods.changePasswordAfterTokenAssignment = async function (
       'JWTTimestamp = ',
       JWTTimestamp
     );
-    const isPasswordChanged = (JWTTimestamp < modifiedTimestamp);
-    return isPasswordChanged;
+    return (JWTTimestamp < modifiedTimestamp);
   }
   return false;
 };
