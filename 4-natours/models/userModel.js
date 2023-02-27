@@ -75,7 +75,7 @@ userSchema.methods.changePasswordAfterTokenAssignment = function (
     // as JWTTimestamp is in milliseconds we need to convert passwordChangedAt in milliseconds for comparision
     const modifiedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
-      10,
+      10
     );
     console.log(
       'modifiedTimestamp = ',
@@ -83,7 +83,7 @@ userSchema.methods.changePasswordAfterTokenAssignment = function (
       'JWTTimestamp = ',
       JWTTimestamp
     );
-    return (JWTTimestamp < modifiedTimestamp);
+    return JWTTimestamp < modifiedTimestamp;
   }
   return false;
 };

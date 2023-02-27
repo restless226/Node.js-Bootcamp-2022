@@ -70,7 +70,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     return next(
       new AppError(
         'Hey, You are not logged in! Please log in to get access.',
-        401,
+        401
       )
     );
   }
@@ -84,23 +84,25 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   /// 3] Check if current user exists or not.
   const currentUser = await User.findById(decodedObject.id);
-  console.log("currentUser = ", currentUser);
+  console.log('currentUser = ', currentUser);
   if (!currentUser) {
     return next(
       new AppError(
         'The user belonging to this token does no longer exist.',
-        401,
+        401
       )
     );
   }
 
   /// 4] Check if user changes password after the token was issued.
-  const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(decodedObject.iat);
+  const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(
+    decodedObject.iat
+  );
   if (isPasswordChanged) {
     return next(
       new AppError(
         'Your password has been changed recently! Please log in again!',
-        401,
+        401
       )
     );
   }
