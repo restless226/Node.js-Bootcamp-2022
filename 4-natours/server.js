@@ -21,9 +21,14 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log('DB connected successfully...');
+  })
+  .catch((err) => {
+    console.log(`DB error = ${err.message}`);
+    process.exit(-1);
   });
 
 // console.log(app.get('env'));
@@ -52,8 +57,8 @@ const server = app.listen(port, () => {
 process.on('unhandledRejection', (err) => {
   console.log('Unhandled Rejection!!! 💥 Shutting Down Server!!!');
   console.log('unhandledRejection err = ', err);
-  console.log('unhandledRejection err.name = ', err.name);
-  console.log('unhandledRejection err.msg = ', err.msg);
+  // console.log('unhandledRejection err.name = ', err.name);
+  // console.log('unhandledRejection err.msg = ', err.msg);
   server.close(() => {
     process.exit(1);
   });
