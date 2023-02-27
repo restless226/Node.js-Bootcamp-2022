@@ -17,7 +17,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
+    passwordChangedAt: req.body.passwordChangedAt ?? Date.now(),
+    role: req.body.role,
   });
   const token = signToken(newUser._id);
   res.status(201).json({
@@ -65,7 +66,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log('token = ', token);
+  // console.log('token = ', token);
   if (!token) {
     return next(
       new AppError(
@@ -80,11 +81,11 @@ exports.protect = catchAsync(async (req, res, next) => {
     token,
     process.env.JWT_SECRET
   );
-  console.log('decodedObject = ', decodedObject);
+  // console.log('decodedObject = ', decodedObject);
 
   /// 3] Check if current user exists or not.
   const currentUser = await User.findById(decodedObject.id);
-  console.log('currentUser = ', currentUser);
+  // console.log('currentUser = ', currentUser);
   if (!currentUser) {
     return next(
       new AppError(
@@ -111,3 +112,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+exports.authorize = (...roles) => {
+  return catchAsync((req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You are not authorized to perform this action!', 403)
+      );
+    }
+    next();
+  });
+};
