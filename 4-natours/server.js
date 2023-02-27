@@ -24,7 +24,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log('DB connected successfully...');
+    console.log('DB connected successfully!!!');
   })
   .catch((err) => {
     console.log(`DB error = ${err.message}`);
@@ -33,12 +33,10 @@ mongoose
 
 // console.log(app.get('env'));
 // console.log(process.env);
-
 // const testTour = new Tour({
 //   name: 'The Park Camper',
 //   price: 997,
 // });
-
 // testTour
 //   .save()
 //   .then((doc) => {
