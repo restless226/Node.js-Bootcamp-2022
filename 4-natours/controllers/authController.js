@@ -12,6 +12,7 @@ const signToken = (userId) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  console.log('inside signup in authController.js');
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -31,6 +32,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
+  console.log('inside login in authController.js');
   // const email = req.body.email;
   // const password = req.body.password;
 
@@ -56,7 +58,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log('inside exports.protect in authController.js');
+  console.log('inside protect in authController.js');
   let token;
 
   /// 1] Acquire token and check whether it exists or not.
@@ -114,6 +116,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.authorize = (...roles) => {
+  console.log('inside authorize in authController.js');
   return catchAsync((req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
