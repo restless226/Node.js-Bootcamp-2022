@@ -101,7 +101,6 @@ userSchema.methods.createPasswordResetToken = function () {
 
   // adding 10 min as a timer for expiry
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
   return resetToken;
 };
 
