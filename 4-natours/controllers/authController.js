@@ -13,6 +13,8 @@ const signToken = (userId) => {
   });
 };
 
+const createSendToken = () => {};
+
 exports.signup = catchAsync(async (req, res, next) => {
   console.log('inside signup in authController.js');
   const newUser = await User.create({
@@ -136,6 +138,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('No user exists with that email address!', 404));
   }
+
   /// 2] Generate the random token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
@@ -176,7 +179,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.resetToken)
     .digest('hex');
-  const user = User.findOne({
+  const user = await User.findOne({
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
@@ -200,4 +203,24 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     status: 'success',
     token,
   });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  console.log('inside updatePassword in authController.js');
+
+  // 1] Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2] check if posted current password is correct or not
+  // User.findByIdAndUpdate() will not work as intended
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+    return next(new AppError('Your current password is incorrect!', 401));
+  }
+
+  // 3] If correct then update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.password;
+  await user.save();
+
+  // 4] Log user in, send JWT
 });
