@@ -172,7 +172,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   console.log('inside resetPassword in authController.js');
 
   /// 1] Get user based on the token
-  const hashedToken = await crypto
+  const hashedToken = crypto
     .createHash('sha256')
     .update(req.params.resetToken)
     .digest('hex');
@@ -185,7 +185,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('Token is invalid or has expired!', 400));
   }
-  console.log({user}, {req});
+  console.log({ user }, { req });
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
