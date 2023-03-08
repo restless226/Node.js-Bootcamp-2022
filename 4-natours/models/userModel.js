@@ -60,9 +60,16 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+/// query middleware to show only active users in GetAllUsers query 
+/// here "this" points to current query
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 
