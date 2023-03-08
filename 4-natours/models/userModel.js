@@ -66,8 +66,7 @@ userSchema.methods.verifyPassword = async function (
   candidatePassword,
   userPassword
 ) {
-  const result = await bcrypt.compare(candidatePassword, userPassword);
-  return result ? true : false;
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 // checks if user has changed the password after the token was issued.

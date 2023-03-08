@@ -207,7 +207,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   // 2] check if posted current password is correct or not
   // User.findByIdAndUpdate() will not work as intended
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+  if (!(await user.verifyPassword(req.body.passwordCurrent, user.password))) {
     return next(new AppError('Your current password is incorrect!', 401));
   }
 
