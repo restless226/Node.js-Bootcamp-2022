@@ -18,6 +18,7 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
 exports.createReview = catchAsync(async (req, res, next) => {
   console.log('inside createReview in reviewController.js');
   const newReview = await Review.create(req.body);
+  res.redirect('/');
   res.status(201).json({
     status: 'success',
     data: {
