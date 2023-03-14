@@ -110,6 +110,7 @@ const tourSchema = new mongoose.Schema(
       },
     ],
     guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    // reviews: [{ type: mongoose.Schema.ObjectId, ref: 'Review' }],
   },
   {
     toJSON: { virtuals: true },
@@ -121,6 +122,13 @@ const tourSchema = new mongoose.Schema(
 // as they can be easily derived from existing attributes which are saved into db
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
+});
+
+// Virtual Populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // 1. DOCUMENT MIDDLEWARE:
