@@ -1,6 +1,7 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('./../controllers/authController');
+const reviewController = require('./../controllers/reviewController');
 
 /// router acts as middleware for api/v1/tours api requests
 const router = express.Router();
@@ -26,6 +27,17 @@ router
     authController.protect,
     authController.authorize('admin', 'lead-tour-guide'),
     tourController.deleteTour
+  );
+
+// POST /tour/32432etefd/reviews
+// GET /tour/32432etefd/tour
+
+router
+  .route('/:tourId/reviews')
+  .post(
+    authController.protect,
+    authController.authorize('user'),
+    reviewController.createReview
   );
 
 module.exports = router;
