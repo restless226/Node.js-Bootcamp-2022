@@ -4,7 +4,9 @@ const AppError = require('../utils/appError');
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
   console.log('inside getAllReviews in reviewController.js');
-  const reviews = await Review.find();
+  let filter;
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+  const reviews = await Review.find(filter);
   res.status(200).json({
     status: 'success',
     requestedAt: req.requestTime,
