@@ -1,5 +1,7 @@
 // To catch asynchronous errors
-module.exports = (fn) => (req, res, next) => {
+module.exports = (fn) => {
   // console.log("inside catchAsync.js");
-  fn(req, res, next).catch((err) => next(err));
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
 };
