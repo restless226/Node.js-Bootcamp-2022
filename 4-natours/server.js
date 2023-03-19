@@ -32,21 +32,6 @@ mongoose
     process.exit(-1);
   });
 
-// console.log(app.get('env'));
-// console.log(process.env);
-// const testTour = new Tour({
-//   name: 'The Park Camper',
-//   price: 997,
-// });
-// testTour
-//   .save()
-//   .then((doc) => {
-//     console.log(doc);
-//   })
-//   .catch((err) => {
-//     console.log('ERROR!!!', err);
-//   });
-
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`server listening on port ${port}...`);
