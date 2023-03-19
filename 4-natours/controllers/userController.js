@@ -13,18 +13,7 @@ const generateFilteredBody = (body, ...allowedFields) => {
   return filteredBody;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  console.log('inside getAllUsers in userController.js');
-  const users = await User.find();
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+exports.getAllUsers = factory.getAll(User);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   console.log('inside updateMe in userController.js');
@@ -69,10 +58,10 @@ exports.createUser = (req, res) => {
   console.log('inside createUser in userController.js');
   res.status(500).json({
     status: 'error',
-    message: 'This route is not defined! Please use /signup instead.',
+    message: 'This route is not defined! Please use /signup instead.  ',
   });
 };
-  
+
 // Do not update passwords with this route
 exports.updateUser = factory.updateOne(User);
 
