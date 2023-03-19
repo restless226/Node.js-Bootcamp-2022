@@ -13,11 +13,8 @@ const generateFilteredBody = (body, ...allowedFields) => {
   return filteredBody;
 };
 
-exports.getAllUsers = factory.getAll(User);
-
 exports.updateMe = catchAsync(async (req, res, next) => {
   console.log('inside updateMe in userController.js');
-
   // 1] Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -27,24 +24,19 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   // 2] Filter out unwanted field names that are not allowed to be updated
   const filteredBody = generateFilteredBody(req.body, 'name', 'email');
-
   // 3] Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
   });
-
   // 4] send back success response
   res.status(200).json({
     status: 'success',
     data: { user: updatedUser },
   });
 });
-
-exports.getUser = factory.getOne(User);
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, { active: false });
@@ -61,6 +53,10 @@ exports.createUser = (req, res) => {
     message: 'This route is not defined! Please use /signup instead.  ',
   });
 };
+
+exports.getAllUsers = factory.getAll(User);
+
+exports.getUser = factory.getOne(User);
 
 // Do not update passwords with this route
 exports.updateUser = factory.updateOne(User);
