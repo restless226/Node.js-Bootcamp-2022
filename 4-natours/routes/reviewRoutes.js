@@ -7,11 +7,13 @@ const router = express.Router({ mergeParams: true });
 // POST /tour/32432etefd/reviews
 // POST /reviews
 
+// Protect all routes written below this middleware
+router.use(authController.protect);
+
 router
   .route('/')
   .get(reviewController.getAllReviews)
   .post(
-    authController.protect,
     authController.authorize('user'),
     reviewController.setTourAndUserIds,
     reviewController.createReview
@@ -20,7 +22,7 @@ router
 router
   .route('/:id')
   .get(reviewController.getReview)
-  .patch(reviewController.updateReview)
-  .delete(reviewController.deleteReview);
+  .patch(authController.authorize('user', 'admin'),reviewController.updateReview)
+  .delete(authController.authorize('user', 'admin'),reviewController.deleteReview);
 
 module.exports = router;
