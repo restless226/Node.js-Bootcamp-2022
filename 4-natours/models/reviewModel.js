@@ -67,15 +67,37 @@ reviewSchema.statics.calculateAverageRatings = async function (tourId) {
     },
   ]);
   console.log({ stats });
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].numRatings,
-    ratingsAverage: stats[0].avgRating,
-  });
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].numRatings,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
 };
 
 reviewSchema.post('save', function () {
   // Here this keyoword points to current review document
   this.constructor.calculateAverageRatings(this.tour);
+});
+
+// query middleware - works for findByIdAndUpdate and findByIdAndDelete
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.currentReview = await this.findOne();
+  console.log(`this.currentReview = ${this.currentReview}`);
+  next();
+});
+
+// query middleware - works for findByIdAndUpdate and findByIdAndDelete
+reviewSchema.post(/^findOneAnd/, async function () {
+  // "await this.findOne()" does not work here because has been already executed
+  await this.currentReview.constructor.calculateAverageRatings(
+    this.currentReview.tour
+  );
 });
 
 const Review = mongoose.model('Review', reviewSchema);
