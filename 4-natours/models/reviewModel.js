@@ -52,6 +52,32 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+reviewSchema.statics.calculateAverageRatings = async function (tourId) {
+  // Here this keyoword points to Review model
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        numRatings: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+  console.log({ stats });
+  await Tour.findByIdAndUpdate(tourId, {
+    ratingsQuantity: stats[0].numRatings,
+    ratingsAverage: stats[0].avgRating,
+  });
+};
+
+reviewSchema.post('save', function () {
+  // Here this keyoword points to current review document
+  this.constructor.calculateAverageRatings(this.tour);
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
