@@ -184,10 +184,13 @@ tourSchema.post(/^find/, function (docs, next) {
 // I. pre: runs before .aggregate() after the command is issued
 // II. post: runs after .aggregate() after the command is issued
 tourSchema.pre('aggregate', function (next) {
-  // console.log("tourSchema aggregate middleware pipeline = ", this.pipeline());
-  this.pipeline().unshift({
-    $match: { secretTour: { $ne: true } },
-  });
+  const things = this.pipeline()[0];
+  if (Object.keys(things)[0] !== '$geoNear') {
+    console.log('tourSchema aggregate middleware pipeline = ', this.pipeline());
+    this.pipeline().unshift({
+      $match: { secretTour: { $ne: true } },
+    });
+  }
   next();
 });
 
