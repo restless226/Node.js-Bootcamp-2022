@@ -121,6 +121,7 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // Virtual Property -- They are not saved in db
 // as they can be easily derived from existing attributes which are saved into db
