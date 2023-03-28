@@ -9,9 +9,11 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -22,7 +24,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Serving static files
 // app.use(express.static(`${__dirname}/public`));
-app.set('views', path.join(__dirname, 'public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -79,14 +81,15 @@ app.use((req, res, next) => {
 });
 
 /// 2] ROUTES
-
+app.use('/', viewRouter);
 /// mouting the routers
-app.get('/', (req, res) => {
-  res.status(200).render('base');
-});
 app.use('/api/v1/tours', tourRouter);
+
 app.use('/api/v1/users', userRouter);
+
 app.use('/api/v1/reviews', reviewRouter);
+
+// app.use('/api/v1/views', viewRouter);
 
 /// 3] handling unhandled requests
 app.all('*', (req, res, next) => {
@@ -95,13 +98,17 @@ app.all('*', (req, res, next) => {
 });
 
 // global error handling middleware
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
+if (process.env.NODE_ENV === 'development') {
+  app.use(globalErrorHandler);
+} else {
+  app.use((err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+    res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
   });
-});
+}
 
 module.exports = app;
