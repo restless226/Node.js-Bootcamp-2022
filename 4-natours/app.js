@@ -125,8 +125,8 @@ app.use(
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  const headers = req.headers,
-    cookies = req.cookies;
+  const headers = req.headers;
+  const cookies = req.cookies;
   console.log({ headers }, { cookies });
   next();
 });
