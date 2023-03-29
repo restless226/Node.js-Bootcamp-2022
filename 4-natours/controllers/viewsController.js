@@ -41,28 +41,27 @@ exports.getLoginForm = (req, res) => {
 };
 
 exports.getAccount = (req, res) => {
-  console.log("inside getAccount in viewController.js");
+  console.log('inside getAccount in viewController.js');
   res.status(200).render('account', {
-    title: 'Your account'
+    title: 'Your account',
   });
 };
 
-// exports.updateUserData = catchAsync(async (req, res, next) => {
-//   console.log("inside updateUserData in viewController.js");
-//   const updatedUser = await User.findByIdAndUpdate(
-//     req.user.id,
-//     {
-//       name: req.body.name,
-//       email: req.body.email
-//     },
-//     {
-//       new: true,
-//       runValidators: true
-//     }
-//   );
-
-//   res.status(200).render('account', {
-//     title: 'Your account',
-//     user: updatedUser
-//   });
-// });
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  console.log('inside updateUserData in viewController.js');
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).render('account', {
+    title: 'Your account',
+    user: updatedUser,
+  });
+});
