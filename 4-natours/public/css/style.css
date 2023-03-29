@@ -1324,7 +1324,7 @@ body {
   transform: translateY(-2px);
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   width: 0px; 
   background: transparent; 
-}
+} */
