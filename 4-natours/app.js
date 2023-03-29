@@ -31,18 +31,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'http://127.0.0.1:3000/*'],
+      defaultSrc: ["'self'", 'data:', 'blob:'],
       baseUri: ["'self'"],
       fontSrc: ["'self'", 'https:', 'data:'],
       scriptSrc: ["'self'", 'https://*.cloudflare.com'],
-      scriptSrc: [
-        "'self'",
-        'https://*.stripe.com',
-        'https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js',
-      ],
+      scriptSrc: ["'self'", 'https://*.stripe.com'],
+      scriptSrc: ["'self'", 'http:', 'https://*.mapbox.com', 'data:'],
       frameSrc: ["'self'", 'https://*.stripe.com'],
       objectSrc: ["'none'"],
       styleSrc: ["'self'", 'https:', 'unsafe-inline'],
+      workerSrc: ["'self'", 'data:', 'blob:'],
+      childSrc: ["'self'", 'blob:'],
+      imgSrc: ["'self'", 'data:', 'blob:'],
+      connectSrc: ["'self'", 'blob:', 'https://*.mapbox.com'],
       upgradeInsecureRequests: [],
     },
   })
@@ -96,8 +97,9 @@ app.use(
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  const headers = req.headers, cookies = req.cookies;
-  console.log({headers}, {cookies});
+  const headers = req.headers,
+    cookies = req.cookies;
+  console.log({ headers }, { cookies });
   next();
 });
 
