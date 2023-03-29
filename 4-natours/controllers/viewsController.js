@@ -40,12 +40,12 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
-// exports.getAccount = (req, res) => {
-//   console.log("inside getAccount in viewController.js");
-//   res.status(200).render('account', {
-//     title: 'Your account'
-//   });
-// };
+exports.getAccount = (req, res) => {
+  console.log("inside getAccount in viewController.js");
+  res.status(200).render('account', {
+    title: 'Your account'
+  });
+};
 
 // exports.updateUserData = catchAsync(async (req, res, next) => {
 //   console.log("inside updateUserData in viewController.js");

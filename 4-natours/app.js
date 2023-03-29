@@ -212,7 +212,7 @@ app.use('/api/v1/reviews', reviewRouter);
 
 /// 3] handling unhandled requests
 app.all('*', (req, res, next) => {
-  console.log({req});
+  // console.log({req});
   next(new AppError(`Can't find ${req.originalUrl} on this server!`));
 });
 
