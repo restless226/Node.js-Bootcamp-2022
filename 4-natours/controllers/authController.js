@@ -113,19 +113,20 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   /// 4] Check if user changes password after the token was issued.
-  const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(
-    decodedObject.iat
-  );
-  if (isPasswordChanged) {
-    return next(
-      new AppError(
-        'Your password has been changed recently! Please log in again!',
-        401
-      )
-    );
-  }
+  // const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(
+  //   decodedObject.iat
+  // );
+  // if (isPasswordChanged) {
+  //   return next(
+  //     new AppError(
+  //       'Your password has been changed recently! Please log in again!',
+  //       401
+  //     )
+  //   );
+  // }
   /// 5] Grant access to protected route
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
