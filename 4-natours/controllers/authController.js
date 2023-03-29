@@ -51,20 +51,17 @@ exports.login = catchAsync(async (req, res, next) => {
   console.log('inside login in authController.js');
   // const email = req.body.email;
   // const password = req.body.password;
-
   const { email, password } = req.body;
   /// 1] Check if email and password exist
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400));
   }
-
   /// 2] Check if user exist and password is correct
   const user = await User.findOne({ email: email }).select('+password');
   if (!user || !(await user.verifyPassword(password, user.password))) {
     return next(new AppError('Invalid email or password!', 401));
   }
   console.log('exports.login user = ', user);
-
   /// 3] If everything is ok, send json web token to the client
   createSendToken(user, 200, res);
 });
@@ -80,7 +77,6 @@ exports.logout = (req, res) => {
 exports.protect = catchAsync(async (req, res, next) => {
   console.log('inside protect in authController.js');
   let token;
-
   /// 1] Acquire token and check whether it exists or not.
   if (
     req.headers.authorization &&
@@ -99,14 +95,12 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   /// 2] Verify the token.
   const decodedObject = await util.promisify(jwt.verify)(
     token,
     process.env.JWT_SECRET
   );
   // console.log('decodedObject = ', decodedObject);
-
   /// 3] Check if current user exists or not.
   const currentUser = await User.findById(decodedObject.id);
   // console.log('currentUser = ', currentUser);
@@ -118,7 +112,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   /// 4] Check if user changes password after the token was issued.
   const isPasswordChanged = currentUser.changePasswordAfterTokenAssignment(
     decodedObject.iat
@@ -131,7 +124,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   /// 5] Grant access to protected route
   req.user = currentUser;
   next();
@@ -139,27 +131,27 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // Only for rendered pages, no errors!
 exports.isLoggedIn = async (req, res, next) => {
+  console.log('inside isLoggedIn in authController.js');
   if (req.cookies.jwt) {
     try {
       // 1) verify token
-      const decoded = await promisify(jwt.verify)(
+      const decoded = await util.promisify(jwt.verify)(
         req.cookies.jwt,
         process.env.JWT_SECRET
       );
-
       // 2) Check if user still exists
       const currentUser = await User.findById(decoded.id);
+      // console.log({currentUser});
       if (!currentUser) {
         return next();
       }
-
       // 3) Check if user changed password after the token was issued
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return next();
-      }
-
+      // if (currentUser.changedPasswordAfter(decoded.iat)) {
+      //   return next();
+      // }
       // THERE IS A LOGGED IN USER
       res.locals.user = currentUser;
+      // console.log("res.locals.user = ", res.locals.user);
       return next();
     } catch (err) {
       return next();

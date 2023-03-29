@@ -199,8 +199,9 @@ app.use((req, res, next) => {
 });
 
 /// 2] ROUTES
-app.use('/', viewRouter);
 /// mouting the routers
+app.use('/', viewRouter);
+
 app.use('/api/v1/tours', tourRouter);
 
 app.use('/api/v1/users', userRouter);
@@ -211,22 +212,11 @@ app.use('/api/v1/reviews', reviewRouter);
 
 /// 3] handling unhandled requests
 app.all('*', (req, res, next) => {
-  // console.log('app.all req = ', req);
+  console.log({req});
   next(new AppError(`Can't find ${req.originalUrl} on this server!`));
 });
 
 // global error handling middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(globalErrorHandler);
-} else {
-  app.use((err, req, res, next) => {
-    err.statusCode = err.statusCode || 500;
-    err.status = err.status || 'error';
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-  });
-}
+app.use(globalErrorHandler);
 
 module.exports = app;
