@@ -1,7 +1,7 @@
 const AppError = require('../utils/appError');
 
 const sendErrorDev = (err, res) => {
-  console.log("inside sendErrorDev");
+  console.log("inside sendErrorDev error = ", err);
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,

@@ -35,12 +35,18 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.getLoginForm = (req, res) => {
-//   console.log("inside getLoginForm in viewController.js");
-//   res.status(200).render('login', {
-//     title: 'Log into your account'
-//   });
-// };
+exports.getLoginForm = (req, res) => {
+  console.log('inside getLoginForm in viewController.js');
+  res
+    .status(200)
+    .set(
+      'Content-Security-Policy',
+      "connect-src 'self' https://cdnjs.cloudflare.com"
+    )
+    .render('login', {
+      title: 'Log into your account',
+    });
+};
 
 // exports.getAccount = (req, res) => {
 //   console.log("inside getAccount in viewController.js");
