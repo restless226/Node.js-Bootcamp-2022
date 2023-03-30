@@ -1,8 +1,11 @@
 const express = require('express');
-/// router acts as middleware for api/v1/users api requests
-const router = express.Router();
+const multer = require('multer');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const upload = multer({ dest: 'public/img/users' });
+
+/// router acts as middleware for api/v1/users api requests
+const router = express.Router();
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
@@ -14,7 +17,7 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 router.use(authController.protect);
 
 router.patch('/updateMyPassword', authController.updatePassword);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', upload.single('photo'), userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 router.get('/getMe', userController.getMe, userController.getUser);
 

@@ -20,6 +20,9 @@ exports.getMe = (req, res, next) => {
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   console.log('inside updateMe in userController.js');
+  const body = req.body;
+  const file = req.file;
+  console.log({ body }, { file });
   // 1] Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
