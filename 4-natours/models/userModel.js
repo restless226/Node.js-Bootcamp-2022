@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
+    default: 'default.jpg',
   },
   password: {
     type: String,
@@ -66,7 +67,7 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-/// query middleware to show only active users in GetAllUsers query 
+/// query middleware to show only active users in GetAllUsers query
 /// here "this" points to current query
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } });
