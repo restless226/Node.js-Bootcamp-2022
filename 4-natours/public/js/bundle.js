@@ -12322,6 +12322,22 @@ var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
 var userPasswordForm = document.querySelector('.form-user-password');
+var filetag = document.querySelector('#photo');
+var preview = document.querySelector('.form__user-photo');
+var readURL = function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      preview.setAttribute('src', e.target.result);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+};
+if (filetag && preview) {
+  filetag.addEventListener('change', function () {
+    readURL(this);
+  });
+}
 
 // DELEGATION
 if (mapBox) {

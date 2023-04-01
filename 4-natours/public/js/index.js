@@ -10,6 +10,26 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const filetag = document.querySelector('#photo');
+const preview = document.querySelector('.form__user-photo');
+
+const readURL = (input) => {
+  if (input.files && input.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+          preview.setAttribute('src', e.target.result);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+  }
+};
+
+if (filetag && preview) {
+  filetag.addEventListener('change', function () {
+      readURL(this);
+  });
+}
 
 // DELEGATION
 if (mapBox) {
