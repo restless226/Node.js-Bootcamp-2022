@@ -13,8 +13,8 @@ module.exports = class Email {
   }
 
   // Create a transporter
-  createTransports() {
-    return (process.env.NODE_ENV === 'production')
+  newTransport() {
+    return process.env.NODE_ENV === 'production'
       ? nodemailer.createTransport({
           service: 'SendGrid',
           auth: {
@@ -26,7 +26,7 @@ module.exports = class Email {
           host: process.env.EMAIL_HOST,
           port: process.env.EMAIL_PORT,
           secure: false,
-    logger: true,
+          logger: true,
           auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD,
@@ -40,7 +40,7 @@ module.exports = class Email {
     const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
       url: this.url,
-      subject
+      subject,
     });
     // 2) Define email options
     const mailOptions = {
@@ -48,7 +48,7 @@ module.exports = class Email {
       to: this.to,
       subject,
       html,
-      text: htmlToText.fromString(html)
+      text: htmlToText.fromString(html),
     };
     // 3) Create a transport and send email
     await this.newTransport().sendMail(mailOptions);
