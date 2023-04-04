@@ -26,6 +26,13 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 /// 1] GLOBAL MIDDLEWARES
+const corsOption = {
+  credentials: true,
+  origin: ['http://localhost:3000'],
+};
+app.use(cors(corsOption));
+
+app.options('*', cors);
 
 // Serving static files
 // app.use(express.static(`${__dirname}/public`));
@@ -152,12 +159,6 @@ console.log('process.env.NODE_ENV =', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
-const corsOption = {
-  credentials: true,
-  origin: ['http://localhost:3000'],
-};
-app.use(cors(corsOption));
 
 // Limit request from same API
 const limiter = rateLimit({
