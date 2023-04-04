@@ -46,7 +46,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log({url});
+  console.log({ url });
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res);
@@ -193,16 +193,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   /// 3] Send it back to user's email
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/v1/users/resetPassword/${resetToken}`;
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password please ignore this email.`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'your password reset token (valid for 10 min)',
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get(
+      'host'
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    await new Email(user, resetURL).sendPasswordReset();
     res.status(200).json({
       status: 'success',
       message: 'Token has been sent to email!',
@@ -222,11 +217,13 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   console.log('inside resetPassword in authController.js');
+  // const params = req.params;
+  // console.log({ params });
 
   /// 1] Get user based on the token
   const hashedToken = crypto
     .createHash('sha256')
-    .update(req.params.resetToken)
+    .update(req.params.token)
     .digest('hex');
   const user = await User.findOne({
     passwordResetToken: hashedToken,
