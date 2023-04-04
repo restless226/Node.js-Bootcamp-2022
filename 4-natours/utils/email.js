@@ -44,7 +44,7 @@ module.exports = class Email {
     });
     // 2) Define email options
     const mailOptions = {
-      from: this.from,
+      from: process.env.SENDGRID_EMAIL_FROM,
       to: this.to,
       subject,
       html,
