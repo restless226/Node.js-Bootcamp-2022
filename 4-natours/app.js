@@ -219,4 +219,6 @@ app.all('*', (req, res, next) => {
 // global error handling middleware
 app.use(globalErrorHandler);
 
+// console.log("this line is to test commit on push on laptop branch");
+
 module.exports = app;
